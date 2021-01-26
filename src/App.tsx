@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import "./App.css";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import { Input, CheckBox, ListItem } from "./components";
+import { ThemeProvider } from "styled-components";
+import { lightTheme, darkTheme, GlobalStyles } from "./theme";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #2aa7ff;
 `;
 
 const Banner = styled.div`
@@ -93,35 +94,36 @@ const Header = styled.div`
 const Title = styled.div`
   text-transform: uppercase;
   font-size: 1.6rem;
-  color: #fff;
+  color: ${(props) => props.theme.text};
   font-weight: 700;
 `;
 
 const CreateBox = styled.div`
   display: flex;
   align-items: center;
-  background-color: #25273c;
+  background-color: ${(props) => props.theme.background};
   padding: 0 0.6rem;
   border-radius: 6px;
 `;
 
 const TodoList = styled.div`
-  background-color: #25273c;
+  background-color: ${(props) => props.theme.background};
   overflow: scroll;
   max-height: 400px;
   margin-top: 1.5rem;
+  border-radius: 6px;
 `;
 
 const Footer = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 1rem 1.2rem;
-  background-color: #25273c;
-  border-top: 1px solid #383a4f;
+  background-color: ${(props) => props.theme.background};
+  border-top: 1px solid ${(props) => props.theme.listItemBorder};
 `;
 
 const CountSection = styled.div`
-  color: #c5c7de;
+  color: ${(props) => props.theme.text};
 `;
 
 const TabSection = styled.div`
@@ -144,7 +146,7 @@ const TabSection = styled.div`
 
 const TabSectionItem = styled.div`
   margin: 0 0.5rem;
-  color: #c5c7de;
+  color: ${(props) => props.theme.text};
 
   &:hover {
     cursor: pointer;
@@ -156,9 +158,9 @@ const SeperateTabSection = styled.div`
   margin-top: 1.5rem;
   display: flex;
   padding: 1rem 1.2rem;
-  background-color: #25273c;
+  background-color: ${(props) => props.theme.background};
   justify-content: center;
-  color: #c5c7de;
+  color: ${(props) => props.theme.text};
 
   @media (min-width: 576px) {
   }
@@ -175,7 +177,7 @@ const SeperateTabSection = styled.div`
 `;
 
 const ClearSection = styled.div`
-  color: #c5c7de;
+  color: ${(props) => props.theme.text};
 
   &:hover {
     cursor: pointer;
@@ -184,60 +186,73 @@ const ClearSection = styled.div`
 `;
 
 const App = () => {
-  const toggle = () => {
+  const [theme, setTheme] = useState("dark");
+
+  const themeToggler = () => {
     console.log("triggered");
+    theme === "light" ? setTheme("dark") : setTheme("light");
   };
 
   return (
-    <Wrapper>
-      {/* <Banner></Banner> */}
-      <Container>
-        <Box>
-          <Header>
-            <Title>Todo</Title>
-            <Toggle defaultChecked={true} onChange={toggle} />
-          </Header>
-          <Content>
-            <CreateBox>
-              <CheckBox />
-              <Input placeholder="Create a new todo..." />
-            </CreateBox>
+    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+      <GlobalStyles />
+      <Wrapper>
+        {/* <Banner></Banner> */}
+        <Container>
+          <Box>
+            <Header>
+              <Title>Todo</Title>
+              <Toggle
+                defaultChecked={true}
+                onChange={themeToggler}
+                icons={{
+                  checked: null,
+                  unchecked: null,
+                }}
+              />
+            </Header>
+            <Content>
+              <CreateBox>
+                <CheckBox />
+                <Input placeholder="Create a new todo..." />
+              </CreateBox>
 
-            <TodoList>
-              <ListItem />
-              <ListItem />
-              <ListItem />
-              <ListItem />
-              <ListItem />
-              <ListItem />
-              <ListItem />
-              <ListItem />
-              <ListItem />
-              <ListItem />
-              <ListItem />
-              <ListItem />
-            </TodoList>
+              <TodoList>
+                <ListItem />
+                <ListItem />
+                <ListItem />
+                <ListItem />
+                <ListItem />
+                <ListItem />
+                <ListItem />
+                <ListItem />
+                <ListItem />
+                <ListItem />
+                <ListItem />
+                <ListItem />
+              </TodoList>
 
-            <Footer>
-              <CountSection>5 items left</CountSection>
+              <Footer>
+                <CountSection>5 items left</CountSection>
 
-              <TabSection>
+                <TabSection>
+                  <TabSectionItem>All</TabSectionItem>
+                  <TabSectionItem>Active</TabSectionItem>
+                  <TabSectionItem>Completed</TabSectionItem>
+                </TabSection>
+                <ClearSection>Clear Completed</ClearSection>
+              </Footer>
+
+              <SeperateTabSection>
                 <TabSectionItem>All</TabSectionItem>
                 <TabSectionItem>Active</TabSectionItem>
                 <TabSectionItem>Completed</TabSectionItem>
-              </TabSection>
-              <ClearSection>Clear Completed</ClearSection>
-            </Footer>
-
-            <SeperateTabSection>
-              <TabSectionItem>All</TabSectionItem>
-              <TabSectionItem>Active</TabSectionItem>
-              <TabSectionItem>Completed</TabSectionItem>
-            </SeperateTabSection>
-          </Content>
-        </Box>
-      </Container>
-    </Wrapper>
+              </SeperateTabSection>
+            </Content>
+          </Box>
+        </Container>
+      </Wrapper>
+    </ThemeProvider>
   );
 };
 

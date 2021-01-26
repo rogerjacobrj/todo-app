@@ -13,11 +13,11 @@ const Label = styled.label`
   display: block;
   width: 22px;
   height: 22px;
-  background-color: #25273c;
+  background-color: ${props => props.theme.background};
   position: relative;
   transition: background-color 0.4s;
   padding: 0.35rem;
-  border: 1px solid #45475a;
+  border: 1px solid ${props => props.theme.circleBorder};
   border-radius: 50%;
 
   &:after {

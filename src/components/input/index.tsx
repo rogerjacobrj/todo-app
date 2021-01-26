@@ -11,15 +11,16 @@ const CustomInput = styled.input`
   padding: 0;
   width: 100%;
   height: 3rem;
-  background-color: #25273c;
+  background-color: ${props => props.theme.background};
   border: none;
   outline: none;
   color: #c5c7de;
+  padding-bottom: 0.3rem;
 
   &::placeholder {
     font-family: "Poppins", sans-serif;
     font-size: 1rem;
-    color: #c5c7de;
+    color: ${(props) => props.theme.text};
   }
 `;
 
