@@ -11,7 +11,7 @@ const CustomInput = styled.input`
   padding: 0;
   width: 100%;
   height: 3rem;
-  background-color: ${props => props.theme.background};
+  background-color: ${(props) => props.theme.background};
   border: none;
   outline: none;
   color: #c5c7de;
@@ -26,14 +26,29 @@ const CustomInput = styled.input`
 
 interface InputProps {
   placeholder: string;
+  changeHandler: (todo: string | number) => void;
+  createTodo: () => void;
+  value: string | number;
 }
 
 const Input = (props: InputProps) => {
-  const { placeholder } = props;
+  const { placeholder, value, changeHandler, createTodo } = props;
+
+  const keyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      createTodo();
+    }
+  };
 
   return (
     <Wrapper>
-      <CustomInput type="text" placeholder={placeholder} />
+      <CustomInput
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => changeHandler(e.target.value)}
+        onKeyDown={(e) => keyPressHandler(e)}
+      />
     </Wrapper>
   );
 };

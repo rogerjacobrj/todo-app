@@ -45,12 +45,21 @@ const Icon = styled.img`
   border-radius: 50%;
 `;
 
-const ListItem = () => {
+interface ListItemProps {
+  data: {
+    id: number;
+    name: string;
+  };
+}
+
+const ListItem = (props: ListItemProps) => {
+  const { data } = props;
+
   return (
     <Wrapper>
       <Content>
-        <CheckBox />
-        <Text>Create new AWS server</Text>
+        <CheckBox data={data} />
+        <Text>{data.name}</Text>
       </Content>
       <IconContainer>
         <Icon src="./img/close.svg" alt="clear" />

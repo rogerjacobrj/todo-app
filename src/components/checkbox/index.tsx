@@ -13,11 +13,11 @@ const Label = styled.label`
   display: block;
   width: 22px;
   height: 22px;
-  background-color: ${props => props.theme.background};
+  background-color: ${(props) => props.theme.background};
   position: relative;
   transition: background-color 0.4s;
   padding: 0.35rem;
-  border: 1px solid ${props => props.theme.circleBorder};
+  border: 1px solid ${(props) => props.theme.circleBorder};
   border-radius: 50%;
 
   &:after {
@@ -51,12 +51,24 @@ const Input = styled.input`
   }
 `;
 
-const CheckBox = () => {
+interface CheckBoxProps {
+  data?: {
+    id: number;
+    name: string;
+  };
+}
+
+const CheckBox = (props: CheckBoxProps) => {
+  const { data } = props;
+
+  let id;
+  data ? (id = `${data.name}_${data.id}`) : (id = "checkbox");
+
   return (
     <Wrapper>
       <CheckContainer>
-        <Input id="checkbox" type="checkbox" hidden />
-        <Label htmlFor="checkbox"></Label>
+        <Input id={id} type="checkbox" hidden />
+        <Label htmlFor={id}></Label>
       </CheckContainer>
     </Wrapper>
   );

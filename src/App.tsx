@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import styled, { ThemeProvider } from "styled-components";
+import React, { useState, useReducer } from "react";
+import styled, { ThemeProvider, css } from "styled-components";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import { Input, CheckBox, ListItem } from "./components";
 import { lightTheme, darkTheme, GlobalStyles } from "./theme";
+import { initialState, reducer } from "./state";
 
 const Wrapper = styled.div`
   display: flex;
@@ -78,12 +79,20 @@ const TodoList = styled.div`
   border-radius: 6px;
 `;
 
+interface FooterProps {
+  hasItems: boolean;
+}
+
 const Footer = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 1rem 1.2rem;
   background-color: ${(props) => props.theme.background};
-  border-top: 1px solid ${(props) => props.theme.listItemBorder};
+  ${(props: FooterProps) =>
+    props.hasItems &&
+    css`
+      border-top: 1px solid ${(props) => props.theme.listItemBorder};
+    `}
 `;
 
 const CountSection = styled.div`
@@ -149,12 +158,34 @@ const ClearSection = styled.div`
   }
 `;
 
+const NoContent = styled.div`
+  width: 100%;
+  text-align: center;
+  color: ${(props) => props.theme.text};
+`;
+
 const App = () => {
   const [theme, setTheme] = useState("dark");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { todo, list } = state;
 
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
   };
+
+  const setValue = (field: string, value: string | number) => {
+    dispatch({ type: "SET_VALUE", field: field, value: value });
+  };
+
+  const changeHandler = (todo: string | number) => {
+    setValue("todo", todo);
+  };
+
+  const createTodo = () => {
+    dispatch({ type: "ADD_TODO" });
+  };
+
+  console.log("state", state);
 
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
@@ -176,33 +207,36 @@ const App = () => {
             <Content>
               <CreateBox>
                 <CheckBox />
-                <Input placeholder="Create a new todo..." />
+                <Input
+                  placeholder="Create a new todo..."
+                  changeHandler={changeHandler}
+                  createTodo={createTodo}
+                  value={todo}
+                />
               </CreateBox>
 
               <TodoList>
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
+                {list &&
+                  list.map((item, idx) => {
+                    return <ListItem data={item} key={`todo-${idx}`} />;
+                  })}
               </TodoList>
 
-              <Footer>
-                <CountSection>5 items left</CountSection>
+              <Footer hasItems={list.length > 0}>
+                {list.length > 0 ? (
+                  <>
+                    <CountSection>{list.length} items left</CountSection>
 
-                <TabSection>
-                  <TabSectionItem>All</TabSectionItem>
-                  <TabSectionItem>Active</TabSectionItem>
-                  <TabSectionItem>Completed</TabSectionItem>
-                </TabSection>
-                <ClearSection>Clear Completed</ClearSection>
+                    <TabSection>
+                      <TabSectionItem>All</TabSectionItem>
+                      <TabSectionItem>Active</TabSectionItem>
+                      <TabSectionItem>Completed</TabSectionItem>
+                    </TabSection>
+                    <ClearSection>Clear Completed</ClearSection>
+                  </>
+                ) : (
+                  <NoContent>No todo items in the list</NoContent>
+                )}
               </Footer>
 
               <SeparateTabSection>
