@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { CheckBox } from "../index";
 
 const IconContainer = styled.div`
@@ -33,9 +33,18 @@ const Content = styled.div`
   align-items: center;
 `;
 
+interface TextProps {
+  completed: boolean;
+}
+
 const Text = styled.div`
   margin-left: 0.6rem;
   color: ${(props) => props.theme.text};
+  ${(props: TextProps) =>
+    props.completed &&
+    css`
+      text-decoration: line-through;
+    `}
 `;
 
 const Icon = styled.img`
@@ -49,17 +58,19 @@ interface ListItemProps {
   data: {
     id: number;
     name: string;
+    completed: boolean;
   };
+  toggleStatus: (id: number) => void;
 }
 
 const ListItem = (props: ListItemProps) => {
-  const { data } = props;
+  const { data, toggleStatus } = props;
 
   return (
     <Wrapper>
       <Content>
-        <CheckBox data={data} />
-        <Text>{data.name}</Text>
+        <CheckBox data={data} toggleStatus={toggleStatus} />
+        <Text completed={data.completed}>{data.name}</Text>
       </Content>
       <IconContainer>
         <Icon src="./img/close.svg" alt="clear" />

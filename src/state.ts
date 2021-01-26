@@ -22,6 +22,10 @@ type Actions =
     }
   | {
       type: "ADD_TODO";
+    }
+  | {
+      type: "TOGGLE_STATUS";
+      id: number;
     };
 
 export const reducer = (state: LocalState, action: Actions) => {
@@ -40,6 +44,18 @@ export const reducer = (state: LocalState, action: Actions) => {
         ...state,
         list: newTodos,
         todo: "",
+      };
+    }
+
+    case "TOGGLE_STATUS": {
+      let list: Todo[] = JSON.parse(JSON.stringify(state.list));
+
+      let index = list.findIndex((item: Todo) => item.id === action.id);
+      list[index].completed = !state.list[index].completed;
+
+      return {
+        ...state,
+        list: list,
       };
     }
 

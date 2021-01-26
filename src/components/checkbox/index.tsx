@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const Wrapper = styled.div`
   position: relative;
@@ -8,6 +8,10 @@ const Wrapper = styled.div`
 `;
 
 const CheckContainer = styled.div``;
+
+interface LabelProps {
+  disabled: boolean;
+}
 
 const Label = styled.label`
   display: block;
@@ -37,6 +41,14 @@ const Label = styled.label`
   &:hover {
     cursor: pointer;
   }
+
+  ${(props: LabelProps) =>
+    props.disabled &&
+    css`
+      &:hover {
+        cursor: not-allowed;
+      }
+    `}
 `;
 
 const Input = styled.input`
@@ -49,26 +61,49 @@ const Input = styled.input`
   &:checked ~ ${Label}::after {
     opacity: 1;
   }
+
+  &::disabled {
+    cursor: not-allowed;
+  }
 `;
 
 interface CheckBoxProps {
   data?: {
     id: number;
     name: string;
+    completed: boolean;
   };
+  toggleStatus?: (id: number) => void;
+  createTodo?: () => void;
+  disabled?: boolean;
 }
 
 const CheckBox = (props: CheckBoxProps) => {
-  const { data } = props;
+  const { data, toggleStatus, createTodo, disabled } = props;
 
-  let id;
+  let id: string;
   data ? (id = `${data.name}_${data.id}`) : (id = "checkbox");
+
+  const onChange = () => {
+    if (id !== "checkbox") {
+      toggleStatus!(data!.id);
+    } else {
+      createTodo!();
+    }
+  };
 
   return (
     <Wrapper>
       <CheckContainer>
-        <Input id={id} type="checkbox" hidden />
-        <Label htmlFor={id}></Label>
+        <Input
+          id={id}
+          type="checkbox"
+          hidden
+          disabled={disabled}
+          checked={data ? data.completed : false}
+          onChange={() => onChange()}
+        />
+        <Label htmlFor={id} disabled={disabled ? disabled : false}></Label>
       </CheckContainer>
     </Wrapper>
   );

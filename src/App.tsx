@@ -182,7 +182,17 @@ const App = () => {
   };
 
   const createTodo = () => {
-    dispatch({ type: "ADD_TODO" });
+    if (todo.length > 0) {
+      dispatch({ type: "ADD_TODO" });
+    }
+  };
+
+  const toggleStatus = (id: number) => {
+    dispatch({ type: "TOGGLE_STATUS", id: id });
+  };
+
+  const getIncompleteCount = () => {
+    return list.filter((item) => item.completed !== true).length;
   };
 
   console.log("state", state);
@@ -206,7 +216,7 @@ const App = () => {
             </Header>
             <Content>
               <CreateBox>
-                <CheckBox />
+                <CheckBox createTodo={createTodo} disabled={true} />
                 <Input
                   placeholder="Create a new todo..."
                   changeHandler={changeHandler}
@@ -218,14 +228,22 @@ const App = () => {
               <TodoList>
                 {list &&
                   list.map((item, idx) => {
-                    return <ListItem data={item} key={`todo-${idx}`} />;
+                    return (
+                      <ListItem
+                        data={item}
+                        key={`todo-${idx}`}
+                        toggleStatus={toggleStatus}
+                      />
+                    );
                   })}
               </TodoList>
 
               <Footer hasItems={list.length > 0}>
                 {list.length > 0 ? (
                   <>
-                    <CountSection>{list.length} items left</CountSection>
+                    <CountSection>
+                      {getIncompleteCount()} items left
+                    </CountSection>
 
                     <TabSection>
                       <TabSectionItem>All</TabSectionItem>
