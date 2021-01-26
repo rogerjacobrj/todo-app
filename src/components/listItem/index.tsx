@@ -61,10 +61,11 @@ interface ListItemProps {
     completed: boolean;
   };
   toggleStatus: (id: number) => void;
+  deleteTodo: (id: number) => void;
 }
 
 const ListItem = (props: ListItemProps) => {
-  const { data, toggleStatus } = props;
+  const { data, toggleStatus, deleteTodo } = props;
 
   return (
     <Wrapper>
@@ -72,7 +73,7 @@ const ListItem = (props: ListItemProps) => {
         <CheckBox data={data} toggleStatus={toggleStatus} />
         <Text completed={data.completed}>{data.name}</Text>
       </Content>
-      <IconContainer>
+      <IconContainer onClick={() => deleteTodo(data.id)}>
         <Icon src="./img/close.svg" alt="clear" />
       </IconContainer>
     </Wrapper>

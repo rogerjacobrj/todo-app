@@ -195,6 +195,14 @@ const App = () => {
     return list.filter((item) => item.completed !== true).length;
   };
 
+  const clearCompleted = () => {
+    dispatch({ type: "CLEAR_COMPLETED" });
+  };
+
+  const deleteTodo = (id: number) => {
+    dispatch({ type: "DELETE_TODO", id: id });
+  };
+
   console.log("state", state);
 
   return (
@@ -233,6 +241,7 @@ const App = () => {
                         data={item}
                         key={`todo-${idx}`}
                         toggleStatus={toggleStatus}
+                        deleteTodo={deleteTodo}
                       />
                     );
                   })}
@@ -250,7 +259,9 @@ const App = () => {
                       <TabSectionItem>Active</TabSectionItem>
                       <TabSectionItem>Completed</TabSectionItem>
                     </TabSection>
-                    <ClearSection>Clear Completed</ClearSection>
+                    <ClearSection onClick={() => clearCompleted()}>
+                      Clear Completed
+                    </ClearSection>
                   </>
                 ) : (
                   <NoContent>No todo items in the list</NoContent>

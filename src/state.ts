@@ -26,6 +26,13 @@ type Actions =
   | {
       type: "TOGGLE_STATUS";
       id: number;
+    }
+  | {
+      type: "CLEAR_COMPLETED";
+    }
+  | {
+      type: "DELETE_TODO";
+      id: number;
     };
 
 export const reducer = (state: LocalState, action: Actions) => {
@@ -56,6 +63,24 @@ export const reducer = (state: LocalState, action: Actions) => {
       return {
         ...state,
         list: list,
+      };
+    }
+
+    case "CLEAR_COMPLETED": {
+      let cleared = state.list.filter((item) => item.completed !== true);
+
+      return {
+        ...state,
+        list: cleared,
+      };
+    }
+
+    case "DELETE_TODO": {
+      let deleted = state.list.filter((item) => item.id !== action.id);
+
+      return {
+        ...state,
+        list: deleted,
       };
     }
 
