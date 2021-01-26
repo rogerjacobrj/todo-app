@@ -1,50 +1,14 @@
 import React, { useState } from "react";
-import styled from "styled-components";
-import "./App.css";
+import styled, { ThemeProvider } from "styled-components";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import { Input, CheckBox, ListItem } from "./components";
-import { ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme, GlobalStyles } from "./theme";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-`;
-
-const Banner = styled.div`
-  // padding: 5rem 0;
-  background-image: url("./img/bg.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  opacity: 0.4;
-  min-height: 10rem;
-
-  @media (min-width: 576px) {
-  }
-
-  @media (min-width: 768px) {
-    padding: 8rem 0;
-  }
-
-  @media (min-width: 992px) {
-    // padding: 10rem 0;
-  }
-
-  @media (min-width: 1200px) {
-    padding: 10rem 0;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-  }
 `;
 
 const Container = styled.div`
@@ -154,7 +118,7 @@ const TabSectionItem = styled.div`
   }
 `;
 
-const SeperateTabSection = styled.div`
+const SeparateTabSection = styled.div`
   margin-top: 1.5rem;
   display: flex;
   padding: 1rem 1.2rem;
@@ -189,7 +153,6 @@ const App = () => {
   const [theme, setTheme] = useState("dark");
 
   const themeToggler = () => {
-    console.log("triggered");
     theme === "light" ? setTheme("dark") : setTheme("light");
   };
 
@@ -197,7 +160,6 @@ const App = () => {
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
       <GlobalStyles />
       <Wrapper>
-        {/* <Banner></Banner> */}
         <Container>
           <Box>
             <Header>
@@ -243,11 +205,11 @@ const App = () => {
                 <ClearSection>Clear Completed</ClearSection>
               </Footer>
 
-              <SeperateTabSection>
+              <SeparateTabSection>
                 <TabSectionItem>All</TabSectionItem>
                 <TabSectionItem>Active</TabSectionItem>
                 <TabSectionItem>Completed</TabSectionItem>
-              </SeperateTabSection>
+              </SeparateTabSection>
             </Content>
           </Box>
         </Container>
