@@ -1,4 +1,6 @@
-interface Todo {
+import { clearCompleted, deleteTodo, toggleStatus } from "./helpers";
+
+export interface Todo {
   id: number;
   name: string;
   completed: boolean;
@@ -50,15 +52,30 @@ export const reducer = (state: LocalState, action: Actions) => {
     }
 
     case "ADD_TODO": {
-      const newTodos = [
-        { id: state.list.length + 1, name: state.todo, completed: false },
-        ...state.list,
-      ];
+      let newTodo: Todo[] = [];
+      
+      let item = state.copy.find(
+        (item) => item.name.toLowerCase() === state.todo.toLowerCase()
+      );
+
+      if (!item) {
+        newTodo = [
+          { id: state.list.length + 1, name: state.todo, completed: false },
+          ...state.list,
+        ];
+
+        return {
+          ...state,
+          list: newTodo,
+          copy: newTodo,
+          todo: "",
+        };
+      }
 
       return {
         ...state,
-        list: newTodos,
-        copy: newTodos,
+        list: state.list,
+        copy: state.copy,
         todo: "",
       };
     }
@@ -67,16 +84,8 @@ export const reducer = (state: LocalState, action: Actions) => {
       let list: Todo[] = JSON.parse(JSON.stringify(state.list));
       let copy: Todo[] = JSON.parse(JSON.stringify(state.copy));
 
-      for (let i = 0; i < list.length; i++) {
-        if (list[i].id === action.id) {
-          list[i].completed = !list[i].completed;
-        }
-      }
-      for (let i = 0; i < copy.length; i++) {
-        if (copy[i].id === action.id) {
-          copy[i].completed = !copy[i].completed;
-        }
-      }
+      list = toggleStatus(list, action.id);
+      copy = toggleStatus(copy, action.id);
 
       return {
         ...state,
@@ -86,8 +95,8 @@ export const reducer = (state: LocalState, action: Actions) => {
     }
 
     case "CLEAR_COMPLETED": {
-      let cleared = state.list.filter((item) => item.completed !== true);
-      let copy = state.copy.filter((item) => item.completed !== true);
+      let cleared = clearCompleted(state.list);
+      let copy = clearCompleted(state.copy);
 
       return {
         ...state,
@@ -97,8 +106,8 @@ export const reducer = (state: LocalState, action: Actions) => {
     }
 
     case "DELETE_TODO": {
-      let deleted = state.list.filter((item) => item.id !== action.id);
-      let copy = state.copy.filter((item) => item.id !== action.id);
+      let deleted = deleteTodo(state.list, action.id);
+      let copy = deleteTodo(state.copy, action.id);
 
       return {
         ...state,
