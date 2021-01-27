@@ -2,7 +2,7 @@ import React, { useState, useReducer } from "react";
 import styled, { ThemeProvider, css } from "styled-components";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
-import { Input, CheckBox, ListItem } from "./components";
+import { Input, CheckBox, ListItem, Tabs } from "./components";
 import { lightTheme, darkTheme, GlobalStyles } from "./theme";
 import { initialState, reducer } from "./state";
 
@@ -117,16 +117,6 @@ const TabSection = styled.div`
   }
 `;
 
-const TabSectionItem = styled.div`
-  margin: 0 0.5rem;
-  color: ${(props) => props.theme.text};
-
-  &:hover {
-    cursor: pointer;
-    color: #4b7ad6;
-  }
-`;
-
 const SeparateTabSection = styled.div`
   margin-top: 1.5rem;
   display: flex;
@@ -162,12 +152,13 @@ const NoContent = styled.div`
   width: 100%;
   text-align: center;
   color: ${(props) => props.theme.text};
+  padding: 0.5rem 0;
 `;
 
 const App = () => {
   const [theme, setTheme] = useState("dark");
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { todo, list } = state;
+  const { todo, list, activeTab, copy } = state;
 
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
@@ -192,7 +183,7 @@ const App = () => {
   };
 
   const getIncompleteCount = () => {
-    return list.filter((item) => item.completed !== true).length;
+    return copy.filter((item) => item.completed !== true).length;
   };
 
   const clearCompleted = () => {
@@ -201,6 +192,11 @@ const App = () => {
 
   const deleteTodo = (id: number) => {
     dispatch({ type: "DELETE_TODO", id: id });
+  };
+
+  const tabClick = (tab: string) => {
+    setValue("activeTab", tab);
+    dispatch({ type: "FILTER_TODO", tab: tab });
   };
 
   console.log("state", state);
@@ -234,7 +230,7 @@ const App = () => {
               </CreateBox>
 
               <TodoList>
-                {list &&
+                {list.length > 0 &&
                   list.map((item, idx) => {
                     return (
                       <ListItem
@@ -245,19 +241,21 @@ const App = () => {
                       />
                     );
                   })}
+
+                {activeTab === "completed" && list.length === 0 && (
+                  <NoContent>No completed todo items in the list</NoContent>
+                )}
               </TodoList>
 
-              <Footer hasItems={list.length > 0}>
-                {list.length > 0 ? (
+              <Footer hasItems={copy.length > 0}>
+                {copy.length > 0 ? (
                   <>
                     <CountSection>
                       {getIncompleteCount()} items left
                     </CountSection>
 
                     <TabSection>
-                      <TabSectionItem>All</TabSectionItem>
-                      <TabSectionItem>Active</TabSectionItem>
-                      <TabSectionItem>Completed</TabSectionItem>
+                      <Tabs tabClick={tabClick} activeTab={activeTab} />
                     </TabSection>
                     <ClearSection onClick={() => clearCompleted()}>
                       Clear Completed
@@ -268,11 +266,11 @@ const App = () => {
                 )}
               </Footer>
 
-              <SeparateTabSection>
-                <TabSectionItem>All</TabSectionItem>
-                <TabSectionItem>Active</TabSectionItem>
-                <TabSectionItem>Completed</TabSectionItem>
-              </SeparateTabSection>
+              {list.length > 0 && (
+                <SeparateTabSection>
+                  <Tabs tabClick={tabClick} activeTab={activeTab} />
+                </SeparateTabSection>
+              )}
             </Content>
           </Box>
         </Container>
