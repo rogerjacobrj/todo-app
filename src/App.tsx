@@ -20,12 +20,9 @@ const Container = styled.div`
 `;
 
 const Box = styled.div`
-  // position: absolute;
-  // top: -9rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  // background-color: #ffffff;
   padding: 2rem 0;
   min-width: 350px;
 
@@ -148,11 +145,21 @@ const ClearSection = styled.div`
   }
 `;
 
+interface NoContentProps {
+  completed?: boolean;
+}
+
 const NoContent = styled.div`
   width: 100%;
   text-align: center;
   color: ${(props) => props.theme.text};
   padding: 0.5rem 0;
+
+  ${(props: NoContentProps) =>
+    props.completed &&
+    css`
+      padding: 1.3rem 0;
+    `}
 `;
 
 const App = () => {
@@ -173,7 +180,7 @@ const App = () => {
   };
 
   const createTodo = () => {
-    if (todo.length > 0) {
+    if (todo.length > 0 && todo.indexOf(" ") !== 0) {
       dispatch({ type: "ADD_TODO" });
     }
   };
@@ -198,8 +205,6 @@ const App = () => {
     setValue("activeTab", tab);
     dispatch({ type: "FILTER_TODO", tab: tab });
   };
-
-  console.log("state", state);
 
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
@@ -242,31 +247,31 @@ const App = () => {
                     );
                   })}
 
-                {activeTab === "completed" && list.length === 0 && (
-                  <NoContent>No completed todo items in the list</NoContent>
+                {list.length === 0 && (
+                  <NoContent completed>No items in the list</NoContent>
                 )}
               </TodoList>
 
-              <Footer hasItems={copy.length > 0}>
-                {copy.length > 0 ? (
-                  <>
-                    <CountSection>
-                      {getIncompleteCount()} items left
-                    </CountSection>
+              {copy.length > 0 && (
+                <Footer hasItems={copy.length > 0}>
+                  {copy.length > 0 && (
+                    <>
+                      <CountSection>
+                        {getIncompleteCount()} items left
+                      </CountSection>
 
-                    <TabSection>
-                      <Tabs tabClick={tabClick} activeTab={activeTab} />
-                    </TabSection>
-                    <ClearSection onClick={() => clearCompleted()}>
-                      Clear Completed
-                    </ClearSection>
-                  </>
-                ) : (
-                  <NoContent>No todo items in the list</NoContent>
-                )}
-              </Footer>
+                      <TabSection>
+                        <Tabs tabClick={tabClick} activeTab={activeTab} />
+                      </TabSection>
+                      <ClearSection onClick={() => clearCompleted()}>
+                        Clear Completed
+                      </ClearSection>
+                    </>
+                  )}
+                </Footer>
+              )}
 
-              {list.length > 0 && (
+              {copy.length > 0 && (
                 <SeparateTabSection>
                   <Tabs tabClick={tabClick} activeTab={activeTab} />
                 </SeparateTabSection>
