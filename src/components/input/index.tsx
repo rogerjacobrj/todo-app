@@ -45,6 +45,7 @@ const Input = (props: InputProps) => {
         type="text"
         value={value}
         placeholder={placeholder}
+        data-testid="input"
         onChange={(e) => changeHandler(e.target.value)}
         onKeyDown={(e) => keyPressHandler(e)}
       />

@@ -71,9 +71,9 @@ const ListItem = (props: ListItemProps) => {
     <Wrapper>
       <Content>
         <CheckBox data={data} toggleStatus={toggleStatus} />
-        <Text completed={data.completed}>{data.name}</Text>
+        <Text data-testid="todo-name" completed={data.completed}>{data.name}</Text>
       </Content>
-      <IconContainer onClick={() => deleteTodo(data.id)}>
+      <IconContainer data-testid="delete-todo"  onClick={() => deleteTodo(data.id)}>
         <Icon src="./img/close.svg" alt="clear" />
       </IconContainer>
     </Wrapper>

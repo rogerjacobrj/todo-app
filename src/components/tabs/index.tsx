@@ -34,24 +34,26 @@ const Tabs = (props: TabsProps) => {
       <TabSectionItem
         isActive={activeTab === "all"}
         onClick={() => tabClick("all")}
+        data-testid="allTab"
       >
         All
       </TabSectionItem>
       <TabSectionItem
         isActive={activeTab === "active"}
         onClick={() => tabClick("active")}
+        data-testid="activeTab"
       >
         Active
       </TabSectionItem>
       <TabSectionItem
         isActive={activeTab === "completed"}
         onClick={() => tabClick("completed")}
+        data-testid="completedTab"
       >
         Completed
       </TabSectionItem>
     </>
   );
 };
-
 
 export default Tabs;

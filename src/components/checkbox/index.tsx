@@ -99,6 +99,7 @@ const CheckBox = (props: CheckBoxProps) => {
           id={id}
           type="checkbox"
           hidden
+          data-testid="checkbox"
           disabled={disabled}
           checked={data ? data.completed : false}
           onChange={() => onChange()}
