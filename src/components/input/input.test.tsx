@@ -4,67 +4,87 @@ import Input from "./index";
 
 test("Whether input component is rendered", () => {
   const placeholder = "Create todo";
-  const value = "Create test";
   const createTodo = jest.fn();
   const changeHandler = jest.fn();
 
   render(
     <Input
       placeholder={placeholder}
-      value={value}
       createTodo={createTodo}
       changeHandler={changeHandler}
     />
   );
 
-  expect(screen.getByDisplayValue("Create test")).toBeInTheDocument();
+  expect(screen.getByDisplayValue("")).toBeInTheDocument();
 });
 
-const setup = () => {
+test("Whether changeHandler function is called", async () => {
   const placeholder = "Create todo";
-  const value = "Create test";
   const createTodo = jest.fn();
   const changeHandler = jest.fn();
 
-  const utils = render(
+  render(
     <Input
       placeholder={placeholder}
-      value={value}
       createTodo={createTodo}
       changeHandler={changeHandler}
     />
   );
-  const input = utils.getByTestId("input") as HTMLInputElement;
-  return {
-    input,
-    ...utils,
-  };
-};
 
-test("Whether changeHandler function is called", async () => {
-//   const placeholder = "Create todo";
-//   const value = "";
-//   const createTodo = jest.fn();
-//   const changeHandler = jest.fn();
-
-//   render(
-//     <Input
-//       placeholder={placeholder}
-//       value={value}
-//       createTodo={createTodo}
-//       changeHandler={changeHandler}
-//     />
-//   );
-
-  const { input } = setup();
-  expect(input.value).toBe("Create test"); // empty before
+  let input = screen.getByTestId("input") as HTMLInputElement;
   fireEvent.change(input, { target: { value: "Good Day" } });
-//   expect(input.value).toBe("Good Day"); //empty after
-// expect(screen.getByText("Good Day")).toBeInTheDocument();
+  expect(input.value).toBe("Good Day");
+  expect(changeHandler).toHaveBeenCalledTimes(1);
+});
 
-  //   const input = screen.getByTestId("input") as HTMLInputElement;
+test("Whether createTodo function is called when 'Enter' key is pressed", async () => {
+  const placeholder = "Create todo";
+  const createTodo = jest.fn();
+  const changeHandler = jest.fn();
 
-  //   await fireEvent.change(input, { target: { value: "Create testing" } });
-  //   expect(input.value).toBe("Create testing");
-  //   expect(screen.getByDisplayValue("Create testing")).toBeInTheDocument();
+  const { container } = render(
+    <Input
+      placeholder={placeholder}
+      createTodo={createTodo}
+      changeHandler={changeHandler}
+    />
+  );
+
+  let input = container.getElementsByTagName("input")[0];
+  fireEvent.keyDown(input, {
+    key: "Enter",
+    keyCode: 13,
+    which: 13,
+    bubbles: true,
+  });
+
+  expect(createTodo).toHaveBeenCalledTimes(1);
+});
+
+test("Whether input value is cleared when todo is added", async () => {
+  const placeholder = "Create todo";
+  const createTodo = jest.fn();
+  const changeHandler = jest.fn();
+  let isAdded = false;
+
+  const { container } = render(
+    <Input
+      placeholder={placeholder}
+      createTodo={createTodo}
+      changeHandler={changeHandler}
+      isAdded={isAdded}
+    />
+  );
+
+  let input = container.getElementsByTagName("input")[0];
+  fireEvent.keyDown(input, {
+    key: "Enter",
+    keyCode: 13,
+    which: 13,
+    bubbles: true,
+  });
+
+  expect(createTodo).toHaveBeenCalledTimes(1);
+  isAdded = true;
+  expect(input.value).toBe("");
 });

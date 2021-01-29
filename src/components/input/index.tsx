@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -27,11 +27,12 @@ interface InputProps {
   placeholder: string;
   changeHandler: (todo: string | number) => void;
   createTodo: () => void;
-  value: string | number;
+  isAdded?: boolean;
 }
 
 const Input = (props: InputProps) => {
-  const { placeholder, value, changeHandler, createTodo } = props;
+  const { placeholder, changeHandler, createTodo, isAdded } = props;
+  const [inputValue, setInputValue] = useState("");
 
   const keyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -39,14 +40,25 @@ const Input = (props: InputProps) => {
     }
   };
 
+  const onChangeHandler = (value: string) => {
+    setInputValue(value);
+    changeHandler(value);
+  };
+
+  useEffect(() => {
+    if (isAdded) {
+      setInputValue("");
+    }
+  }, [isAdded]);
+
   return (
     <Wrapper>
       <CustomInput
         type="text"
-        value={value}
+        value={inputValue}
         placeholder={placeholder}
         data-testid="input"
-        onChange={(e) => changeHandler(e.target.value)}
+        onChange={(e) => onChangeHandler(e.target.value)}
         onKeyDown={(e) => keyPressHandler(e)}
       />
     </Wrapper>

@@ -6,11 +6,12 @@ export interface Todo {
   completed: boolean;
 }
 
-interface LocalState {
+export interface LocalState {
   todo: string;
   list: Todo[];
   copy: Todo[];
   activeTab: string;
+  isTodoAdded: boolean;
 }
 
 export const initialState = {
@@ -18,13 +19,14 @@ export const initialState = {
   list: [],
   copy: [],
   activeTab: "all",
+  isTodoAdded: false
 };
 
-type Actions =
+export type Actions =
   | {
       type: "SET_VALUE";
       field: string;
-      value: string | number;
+      value: string | number | boolean;
     }
   | {
       type: "ADD_TODO";
@@ -69,6 +71,7 @@ export const reducer = (state: LocalState, action: Actions) => {
           list: newTodo,
           copy: newTodo,
           todo: "",
+          isTodoAdded: true
         };
       }
 

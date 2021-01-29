@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import styled, { ThemeProvider, css } from "styled-components";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
@@ -165,13 +165,13 @@ const NoContent = styled.div`
 const App = () => {
   const [theme, setTheme] = useState("dark");
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { todo, list, activeTab, copy } = state;
+  const { todo, list, activeTab, copy, isTodoAdded } = state;
 
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
   };
 
-  const setValue = (field: string, value: string | number) => {
+  const setValue = (field: string, value: string | number | boolean) => {
     dispatch({ type: "SET_VALUE", field: field, value: value });
   };
 
@@ -206,6 +206,14 @@ const App = () => {
     dispatch({ type: "FILTER_TODO", tab: tab });
   };
 
+  useEffect(() => {
+    if (isTodoAdded) {
+      setTimeout(() => {
+        setValue("isTodoAdded", false);
+      }, 1000);
+    }
+  }, [isTodoAdded]);
+
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
       <GlobalStyles />
@@ -230,7 +238,7 @@ const App = () => {
                   placeholder="Create a new todo..."
                   changeHandler={changeHandler}
                   createTodo={createTodo}
-                  value={todo}
+                  isAdded={isTodoAdded}
                 />
               </CreateBox>
 
