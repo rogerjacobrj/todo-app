@@ -9,7 +9,7 @@ This is a simple Todo application developed using React, TypeScript & Styled-Com
 * Clear all completed todos
 * Toggle light and dark mode
 
-Check the live demo [`https://roger-react-todo-app.herokuapp.com`](https://roger-react-todo-app.herokuapp.com)
+Check the live demo [`https://roger-react-todo-app.herokuapp.com`](https://roger-todo-app.netlify.app)
 
 [![react-todo-app](https://roger-images.s3.ap-south-1.amazonaws.com/todo-app.png)](https://roger-react-todo-app.herokuapp.com/)
 
